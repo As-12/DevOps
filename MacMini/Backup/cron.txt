@@ -1,0 +1,2 @@
+30 2 * * 0 /Users/as12/Projects/DevOps/MacMini/Backup/backup_ssd.sh "/Volumes/SSD/GoogleDrive"
+30 2 * * 4 /Users/as12/Projects/DevOps/MacMini/Backup/backup_hdd.sh "/Volumes/HDD/GoogleDrive"
