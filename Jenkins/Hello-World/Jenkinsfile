@@ -1,0 +1,17 @@
+pipeline {
+    // 1. Specifies where to run the pipeline. 'any' means any available agent.
+    agent any
+
+    // 2. Contains all the work to be done, broken into stages.
+    stages {
+        // 3. A single stage in our pipeline, named "Hello".
+        stage('Hello') {
+            // 4. Contains the steps to execute in this stage.
+            steps {
+                // 5. A simple step that prints a message to the console log.
+                echo 'Hello World!'
+            }
+        }
+    }
+}
+
