@@ -1,0 +1,32 @@
+NGNIX + Jenkins
+
+
+Docker Runs:
+
+sudo docker run -d --name jenkins-server --network rushb-network -v "$(pwd)/jenkins_home":/var/jenkins_home --env JENKINS_OPTS="--prefix=/jenkins" --restart unless-stopped jenkins/jenkins:lts-jdk17
+
+sudo docker run -d -p 80:80 --name nginx --network rushb-network -v "$(pwd)/nginx-config":/etc/nginx/conf.d --restart unless-stopped nginx:latest
+
+
+server {
+    listen 80;
+
+    location /jenkins/ {
+
+        # Forward the request to the Jenkins container
+        proxy_pass http://jenkins-server:8080;
+
+        # Required for Jenkins UI
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        # Standard proxy headers
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+}

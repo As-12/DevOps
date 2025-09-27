@@ -1,0 +1,91 @@
+You can upgrade an Ubuntu server from the command line using the do-release-upgrade command. This process involves preparing the system, running the upgrade tool, and then cleaning up afterward.
+
+Before you begin, always create a full backup or snapshot of your server. ⚠️ A failed upgrade can result in data loss or a non-bootable system.
+
+## Step 1: Prepare the System
+First, you need to make sure your current system is fully up-to-date.
+
+Refresh Package Lists: Fetch the latest list of available packages from the repositories.
+
+Bash
+
+sudo apt update
+Upgrade Installed Packages: Install the latest versions of all packages currently on your system.
+
+Bash
+
+sudo apt upgrade -y
+Perform a Distribution Upgrade: This command is important as it handles any changes in dependencies, adding or removing packages as necessary to complete the upgrade of your current version.
+
+Bash
+
+sudo apt dist-upgrade -y
+Clean Up: Remove any old packages and dependencies that are no longer needed.
+
+Bash
+
+sudo apt autoremove -y
+Install the Upgrade Tool: Make sure the core upgrade manager is installed. It usually is, but it's good to check.
+
+Bash
+
+sudo apt install update-manager-core
+Reboot (If Required): If a kernel update was installed during the previous steps, it's best to reboot now to ensure you're running the latest kernel before starting the major version upgrade.
+
+Bash
+
+sudo reboot
+## Step 2: Run the Upgrade 🚀
+With the system prepared, you can now start the release upgrade process. It's highly recommended to run this command inside a screen or tmux session. This ensures the upgrade will continue even if your SSH connection drops.
+
+Start a tmux session (optional but recommended):
+
+Bash
+
+tmux
+If your connection is lost, you can reconnect to the server and run tmux attach to get back to your session.
+
+Launch the Upgrade Tool:
+
+Bash
+
+sudo do-release-upgrade
+The tool will check for a new release. It will find the next available version or the next Long-Term Support (LTS) release, depending on your current version and configuration.
+
+Follow the On-Screen Instructions:
+
+SSH Port: The upgrader will likely inform you that it's starting an additional SSH service on a fallback port (e.g., 1022) as a safety measure. Note this down in case your main SSH session fails.
+
+Confirm: You'll be shown a summary of what will be installed, upgraded, and removed. You'll need to confirm that you want to proceed by typing y.
+
+Configuration Files: During the process, you may be asked what to do about modified configuration files. You can typically choose to keep your current version or install the package maintainer's new version. Review the differences if you're unsure.
+
+Restart Services: The tool may ask for permission to restart services automatically during the upgrade. It's generally safe to allow this.
+
+The download and installation process can take a significant amount of time, depending on your server's performance and internet connection.
+
+## Step 3: Post-Upgrade Cleanup and Verification
+Once the do-release-upgrade script is finished, a final reboot and cleanup are needed.
+
+Reboot the Server: The upgrader will prompt you to reboot to complete the process.
+
+Bash
+
+sudo reboot
+Verify the Upgrade: After the server comes back online, log in and check the Ubuntu version. ✅
+
+Bash
+
+lsb_release -a
+The output should now show the new version number. For example:
+
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 24.04.1 LTS
+Release:        24.04
+Codename:       noble
+Final Cleanup: Remove any remaining obsolete packages that were downloaded for the upgrade.
+
+Bash
+
+sudo apt autoremove --purge -y
